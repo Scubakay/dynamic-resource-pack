@@ -10,14 +10,14 @@ import org.scubakay.dynamic_resource_pack.DynamicResourcePack;
 import java.util.Optional;
 import java.util.UUID;
 
-public class ResourcePackConfig {
+public class ServerProperties {
     public ConfigEntry<UUID> id;
     public ConfigEntry<String> url;
     public ConfigEntry<String> hash;
     public ConfigEntry<Boolean> required;
     public ConfigEntry<String> prompt;
 
-    public ResourcePackConfig(ConfigBuilder builder) {
+    public ServerProperties(ConfigBuilder builder) {
         id = builder.entry("resource-pack-id", UUID.randomUUID());
         url = builder.stringEntry("resource-pack", "");
         hash = builder.stringEntry("resource-pack-sha1", "");

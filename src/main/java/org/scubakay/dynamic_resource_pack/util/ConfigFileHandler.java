@@ -10,14 +10,14 @@ import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.scubakay.dynamic_resource_pack.DynamicResourcePack;
-import org.scubakay.dynamic_resource_pack.config.ResourcePackConfig;
+import org.scubakay.dynamic_resource_pack.config.ServerProperties;
 
 import java.nio.file.Path;
 
 public class ConfigFileHandler {
     private static ConfigFileHandler instance;
 
-    public ResourcePackConfig config;
+    public ServerProperties config;
     private final MinecraftServer server;
     private ConfigFileWatcher watcher;
 
@@ -62,7 +62,7 @@ public class ConfigFileHandler {
     }
 
     private void onConfigFileChange() {
-        ResourcePackConfig newConfig = loadConfigFile();
+        ServerProperties newConfig = loadConfigFile();
         if (!newConfig.equals(config)) {
             DynamicResourcePack.LOGGER.info("{} has changed, reloading resource pack...", getConfigFile(server).getFileName());
             config = newConfig;
@@ -78,8 +78,8 @@ public class ConfigFileHandler {
         }
     }
 
-    public ResourcePackConfig loadConfigFile() {
-        return ConfigBuilder.builder(ResourcePackConfig::new)
+    public ServerProperties loadConfigFile() {
+        return ConfigBuilder.builder(ServerProperties::new)
             .path(getConfigFile(server))
             .strict(true)
             .saveAfterBuild(false)
@@ -97,10 +97,10 @@ public class ConfigFileHandler {
     }
 
     private void notifyPlayers() {
-        Text message = Text.literal("Server: A new version of Arcadia Roleplay Data is available: ").append(
-            Text.literal("[Reload]").styled(style -> style.withColor(Formatting.GREEN)
+        Text message = Text.translatable("dynamicresourcepacks.confighandler.newversionavailable").append(
+            Text.translatable("dynamicresourcepacks.confighandler.newversionreload").styled(style -> style.withColor(Formatting.GREEN)
                 .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/resourcepack"))
-                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Reload the server resource pack")))
+                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.translatable("dynamicresourcepacks.confighandler.newversiontooltip")))
             ));
 
         server.getPlayerManager().broadcast(message, false);

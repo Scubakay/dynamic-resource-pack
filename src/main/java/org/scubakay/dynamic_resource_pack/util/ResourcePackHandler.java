@@ -5,13 +5,13 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
-import org.scubakay.dynamic_resource_pack.config.ResourcePackConfig;
+import org.scubakay.dynamic_resource_pack.config.ServerProperties;
 
 import java.util.Collection;
 
 public class ResourcePackHandler {
     public static void push(ServerPlayNetworkHandler handler, MinecraftServer server) {
-        ResourcePackConfig config = ConfigFileHandler.getInstance(server).config;
+        ServerProperties config = ConfigFileHandler.getInstance(server).config;
         handler.sendPacket(new ResourcePackSendS2CPacket(
                 config.id.get(),
                 config.url.get(),
