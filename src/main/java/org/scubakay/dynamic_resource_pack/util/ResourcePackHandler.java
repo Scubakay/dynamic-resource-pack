@@ -11,6 +11,7 @@ import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import org.scubakay.dynamic_resource_pack.DynamicResourcePack;
+import org.scubakay.dynamic_resource_pack.config.ResourcePackConfig;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
@@ -23,12 +24,13 @@ public class ResourcePackHandler {
     }
 
     public static void push(ServerPlayNetworkHandler handler, MinecraftServer server) {
+        ResourcePackConfig config = ConfigFileHandler.getInstance(server).config;
         handler.sendPacket(new ResourcePackSendS2CPacket(
-            UUID.fromString(DynamicResourcePack.config.id.get()),
-            DynamicResourcePack.config.url.get(),
-            DynamicResourcePack.config.hash.get(),
-            DynamicResourcePack.config.required.get(),
-            DynamicResourcePack.config.getPrompt(server.getRegistryManager())
+                UUID.fromString(config.id.get()),
+                config.url.get(),
+                config.hash.get(),
+                config.required.get(),
+                config.getPrompt(server.getRegistryManager())
         ));
     }
 
