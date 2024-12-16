@@ -1,6 +1,5 @@
 package org.scubakay.dynamic_resource_pack.util;
 
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.network.packet.s2c.common.ResourcePackSendS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
@@ -12,7 +11,7 @@ import java.util.Collection;
 
 public class ResourcePackHandler {
     public static void register() {
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> push(handler, server));
+        //ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> push(handler, server));
     }
 
     public static void push(ServerPlayNetworkHandler handler, MinecraftServer server) {

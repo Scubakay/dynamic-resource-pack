@@ -9,7 +9,7 @@ import org.scubakay.dynamic_resource_pack.config.ResourcePackConfig;
 import java.nio.file.Path;
 
 public class ConfigFileHandler {
-    public static ConfigFileHandler instance;
+    private static ConfigFileHandler instance;
 
     public ResourcePackConfig config;
     private final MinecraftServer server;
@@ -17,7 +17,11 @@ public class ConfigFileHandler {
 
     public ConfigFileHandler(MinecraftServer server) {
         this.server = server;
-        config = loadConfigFile(true);
+        config = loadConfigFile();
+    }
+
+    public MinecraftServer getServer() {
+        return server;
     }
 
     public static void registerEvents() {
@@ -35,6 +39,9 @@ public class ConfigFileHandler {
         }
         return instance;
     }
+    public static ConfigFileHandler getInstance() {
+        return instance;
+    }
 
     private void startConfigFileWatcher() {
         if (watcher == null) {
@@ -49,10 +56,11 @@ public class ConfigFileHandler {
     }
 
     private void onConfigFileChange() {
-        ResourcePackConfig newConfig = loadConfigFile(false);
+        ResourcePackConfig newConfig = loadConfigFile();
         if (!newConfig.equals(config)) {
             DynamicResourcePack.LOGGER.info("{} has changed, reloading resource pack...", getConfigFile(server).getFileName());
             config = newConfig;
+            // TODO: Push after clicking command thingy in chat
             ResourcePackHandler.pushTo(server);
         }
     }
@@ -63,18 +71,20 @@ public class ConfigFileHandler {
         }
     }
 
-    public ResourcePackConfig loadConfigFile(boolean save) {
+    public ResourcePackConfig loadConfigFile() {
         return ConfigBuilder.builder(ResourcePackConfig::new)
-                .path(getConfigFile(server))
-                .strict(true)
-                .saveAfterBuild(save)
-                .build();
+            .path(getConfigFile(server))
+            .strict(true)
+            .saveAfterBuild(false)
+            .keepOrder(true)
+            .build();
     }
 
     public Path getConfigDirectory(MinecraftServer server) {
-        return server.getRunDirectory().resolve("config");
+        //return server.getRunDirectory().resolve("config");
+        return server.getRunDirectory();
     }
     public Path getConfigFile(MinecraftServer server) {
-        return getConfigDirectory(server).resolve("resourcepack.properties");
+        return getConfigDirectory(server).resolve("server.properties");
     }
 }
