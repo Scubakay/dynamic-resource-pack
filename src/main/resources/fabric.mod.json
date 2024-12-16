@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "dynamic_resource_pack",
+  "version": "${version}",
+  "name": "Dynamic Resource Pack",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/dynamic_resource_pack/icon.png",
+  "environment": "server",
+  "entrypoints": {
+    "main": [
+      "org.scubakay.dynamic_resource_pack.DynamicResourcePack"
+    ]
+  },
+  "mixins": [
+    "dynamic_resource_pack.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
