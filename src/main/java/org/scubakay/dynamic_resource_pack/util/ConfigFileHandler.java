@@ -1,21 +1,18 @@
 package org.scubakay.dynamic_resource_pack.util;
 
-import com.google.common.collect.Lists;
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.minecraft.command.CommandSource;
-import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ReloadCommand;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
-import net.minecraft.world.SaveProperties;
+import net.minecraft.util.Formatting;
 import org.scubakay.dynamic_resource_pack.DynamicResourcePack;
 import org.scubakay.dynamic_resource_pack.config.ResourcePackConfig;
 
 import java.nio.file.Path;
-import java.util.Collection;
 
 public class ConfigFileHandler {
     private static ConfigFileHandler instance;
@@ -71,8 +68,7 @@ public class ConfigFileHandler {
             config = newConfig;
 
             reloadDatapacks();
-            // TODO: Push after clicking command thingy in chat
-            ResourcePackHandler.pushTo(server);
+            notifyPlayers();
         }
     }
 
@@ -94,14 +90,23 @@ public class ConfigFileHandler {
     /**
      * Just executes the /reload command
      */
-    public void reloadDatapacks() {
+    private void reloadDatapacks() {
         CommandManager manager = server.getCommandManager();
         ServerCommandSource source = server.getCommandSource();
         manager.executeWithPrefix(source, "reload");
     }
 
+    private void notifyPlayers() {
+        Text message = Text.literal("Server: A new version of Arcadia Roleplay Data is available: ").append(
+            Text.literal("[Reload]").styled(style -> style.withColor(Formatting.GREEN)
+                .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/resourcepack"))
+                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Reload the server resource pack")))
+            ));
+
+        server.getPlayerManager().broadcast(message, false);
+    }
+
     public Path getConfigDirectory(MinecraftServer server) {
-        //return server.getRunDirectory().resolve("config");
         return server.getRunDirectory();
     }
     public Path getConfigFile(MinecraftServer server) {

@@ -1,6 +1,8 @@
 package org.scubakay.dynamic_resource_pack;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import org.scubakay.dynamic_resource_pack.command.ResourceCommand;
 import org.scubakay.dynamic_resource_pack.util.ConfigFileHandler;
 import org.scubakay.dynamic_resource_pack.util.ResourcePackHandler;
 import org.slf4j.Logger;
@@ -13,6 +15,6 @@ public class DynamicResourcePack implements ModInitializer {
     @Override
     public void onInitialize() {
         ConfigFileHandler.registerEvents();
-        ResourcePackHandler.register();
+        CommandRegistrationCallback.EVENT.register(ResourceCommand::register);
     }
 }

@@ -10,10 +10,6 @@ import org.scubakay.dynamic_resource_pack.config.ResourcePackConfig;
 import java.util.Collection;
 
 public class ResourcePackHandler {
-    public static void register() {
-        //ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> push(handler, server));
-    }
-
     public static void push(ServerPlayNetworkHandler handler, MinecraftServer server) {
         ResourcePackConfig config = ConfigFileHandler.getInstance(server).config;
         handler.sendPacket(new ResourcePackSendS2CPacket(
