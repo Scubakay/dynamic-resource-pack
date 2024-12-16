@@ -26,7 +26,7 @@ public class ResourcePackHandler {
     public static void push(ServerPlayNetworkHandler handler, MinecraftServer server) {
         ResourcePackConfig config = ConfigFileHandler.getInstance(server).config;
         handler.sendPacket(new ResourcePackSendS2CPacket(
-                UUID.fromString(config.id.get()),
+                config.id.get(),
                 config.url.get(),
                 config.hash.get(),
                 config.required.get(),

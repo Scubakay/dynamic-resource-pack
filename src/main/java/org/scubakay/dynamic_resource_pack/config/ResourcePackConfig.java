@@ -8,16 +8,17 @@ import org.jetbrains.annotations.NotNull;
 import org.scubakay.dynamic_resource_pack.DynamicResourcePack;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public class ResourcePackConfig {
-    public ConfigEntry<String> id;
+    public ConfigEntry<UUID> id;
     public ConfigEntry<String> url;
     public ConfigEntry<String> hash;
     public ConfigEntry<Boolean> required;
     public ConfigEntry<String> prompt;
 
     public ResourcePackConfig(ConfigBuilder builder) {
-        id = builder.stringEntry("resource-pack-id", "");
+        id = builder.entry("resource-pack-id", UUID.randomUUID());
         url = builder.stringEntry("resource-pack", "");
         hash = builder.stringEntry("resource-pack-sha1", "");
         required = builder.booleanEntry("require-resource-pack", false);

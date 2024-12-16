@@ -17,7 +17,7 @@ public class ConfigFileHandler {
 
     public ConfigFileHandler(MinecraftServer server) {
         this.server = server;
-        config = loadConfigFile();
+        config = loadConfigFile(true);
     }
 
     public static void registerEvents() {
@@ -49,9 +49,9 @@ public class ConfigFileHandler {
     }
 
     private void onConfigFileChange() {
-        DynamicResourcePack.LOGGER.info("{} has changed, reloading resource pack...", getConfigFile(server).getFileName());
-        ResourcePackConfig newConfig = loadConfigFile();
+        ResourcePackConfig newConfig = loadConfigFile(false);
         if (!newConfig.equals(config)) {
+            DynamicResourcePack.LOGGER.info("{} has changed, reloading resource pack...", getConfigFile(server).getFileName());
             config = newConfig;
             ResourcePackHandler.pushTo(server);
         }
@@ -63,18 +63,18 @@ public class ConfigFileHandler {
         }
     }
 
-    public ResourcePackConfig loadConfigFile() {
+    public ResourcePackConfig loadConfigFile(boolean save) {
         return ConfigBuilder.builder(ResourcePackConfig::new)
                 .path(getConfigFile(server))
                 .strict(true)
-                .saveAfterBuild(false)
+                .saveAfterBuild(save)
                 .build();
     }
 
     public Path getConfigDirectory(MinecraftServer server) {
-        return server.getRunDirectory();
+        return server.getRunDirectory().resolve("config");
     }
     public Path getConfigFile(MinecraftServer server) {
-        return getConfigDirectory(server).resolve("server.properties");
+        return getConfigDirectory(server).resolve("resourcepack.properties");
     }
 }
