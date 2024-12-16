@@ -6,8 +6,6 @@ import java.nio.file.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ConfigFileWatcher extends Thread {
-    public static ConfigFileWatcher instance;
-
     private final AtomicBoolean stop = new AtomicBoolean(false);
     private final Runnable runnable;
     private final Path directory;
@@ -19,7 +17,6 @@ public class ConfigFileWatcher extends Thread {
         this.directory = directory;
     }
 
-    public boolean isStopped() { return stop.get(); }
     public void stopThread() { stop.set(true); }
 
     @Override
