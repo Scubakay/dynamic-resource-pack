@@ -97,10 +97,10 @@ public class ConfigFileHandler {
     }
 
     private void notifyPlayers() {
-        Text message = Text.translatable("dynamicresourcepacks.confighandler.newversionavailable").append(
-            Text.translatable("dynamicresourcepacks.confighandler.newversionreload").styled(style -> style.withColor(Formatting.GREEN)
+        Text message = Text.literal("Server: A new version of the server resource pack is available: ").append(
+            Text.literal("[Reload]").styled(style -> style.withColor(Formatting.GREEN)
                 .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/resourcepack"))
-                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.translatable("dynamicresourcepacks.confighandler.newversiontooltip")))
+                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Reload the server resource pack")))
             ));
 
         server.getPlayerManager().broadcast(message, false);
