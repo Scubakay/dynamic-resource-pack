@@ -2,6 +2,7 @@ package org.scubakay.dynamic_resource_pack.util;
 
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.minecraft.network.packet.s2c.common.ResourcePackSendS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -14,6 +15,9 @@ import org.scubakay.dynamic_resource_pack.config.ServerProperties;
 
 import java.nio.file.Path;
 
+/**
+ * Responsible for keeping track of the ServerProperties file
+ */
 public class ConfigFileHandler {
     private static ConfigFileHandler instance;
 
@@ -26,10 +30,6 @@ public class ConfigFileHandler {
         config = loadConfigFile();
     }
 
-    public MinecraftServer getServer() {
-        return server;
-    }
-
     public static void registerEvents() {
         ServerLifecycleEvents.SERVER_STARTED.register((MinecraftServer server) -> {
             getInstance(server).startConfigFileWatcher();
@@ -37,6 +37,16 @@ public class ConfigFileHandler {
         ServerLifecycleEvents.SERVER_STOPPING.register((MinecraftServer server) -> {
             getInstance(server).stopConfigFileWatcher();
         });
+    }
+
+    public ResourcePackSendS2CPacket getResourcePackSendS2CPacket() {
+        return new ResourcePackSendS2CPacket(
+                config.id.get(),
+                config.url.get(),
+                config.hash.get(),
+                config.required.get(),
+                config.getPrompt(server.getRegistryManager())
+        );
     }
 
     public static ConfigFileHandler getInstance(MinecraftServer server) {
