@@ -41,6 +41,7 @@ jobs:
         with:
           changelog-file: CHANGELOG.md
           java: "${{env.JAVA_VERSION}}"
+          version-type: alpha
 
           github-token: "${{env.GITHUB_TOKEN}}"
 
