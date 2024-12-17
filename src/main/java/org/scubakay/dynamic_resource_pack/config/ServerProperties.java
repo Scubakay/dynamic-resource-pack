@@ -7,6 +7,7 @@ import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 import org.scubakay.dynamic_resource_pack.DynamicResourcePack;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -42,5 +43,18 @@ public class ServerProperties {
                 return Optional.empty();
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || o.getClass() != ServerProperties.class) return false;
+
+        ServerProperties other = (ServerProperties) o;
+        return Objects.equals(id.get(), other.id.get())
+            && Objects.equals(url.get(), other.url.get())
+            && Objects.equals(hash.get(), other.hash.get())
+            && Objects.equals(required.get(), other.required.get())
+            && Objects.equals(prompt.get(), other.prompt.get());
     }
 }

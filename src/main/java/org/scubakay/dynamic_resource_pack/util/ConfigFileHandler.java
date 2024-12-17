@@ -21,13 +21,14 @@ import java.nio.file.Path;
 public class ConfigFileHandler {
     private static ConfigFileHandler instance;
 
-    public ServerProperties config;
+    public ServerProperties serverProperties;
     private final MinecraftServer server;
     private ConfigFileWatcher watcher;
 
     public ConfigFileHandler(MinecraftServer server) {
         this.server = server;
-        config = loadConfigFile();
+        serverProperties = loadServerProperties();
+
     }
 
     public static void registerEvents() {
@@ -41,11 +42,11 @@ public class ConfigFileHandler {
 
     public ResourcePackSendS2CPacket getResourcePackSendS2CPacket() {
         return new ResourcePackSendS2CPacket(
-                config.id.get(),
-                config.url.get(),
-                config.hash.get(),
-                config.required.get(),
-                config.getPrompt(server.getRegistryManager())
+                serverProperties.id.get(),
+                serverProperties.url.get(),
+                serverProperties.hash.get(),
+                serverProperties.required.get(),
+                serverProperties.getPrompt(server.getRegistryManager())
         );
     }
 
@@ -72,10 +73,10 @@ public class ConfigFileHandler {
     }
 
     private void onConfigFileChange() {
-        ServerProperties newConfig = loadConfigFile();
-        if (!newConfig.equals(config)) {
+        ServerProperties newConfig = loadServerProperties();
+        if (!newConfig.equals(serverProperties)) {
             DynamicResourcePack.LOGGER.info("{} has changed, reloading resource pack...", getConfigFile(server).getFileName());
-            config = newConfig;
+            serverProperties = newConfig;
 
             reloadDatapacks();
             notifyPlayers();
@@ -88,7 +89,7 @@ public class ConfigFileHandler {
         }
     }
 
-    public ServerProperties loadConfigFile() {
+    public ServerProperties loadServerProperties() {
         return ConfigBuilder.builder(ServerProperties::new)
             .path(getConfigFile(server))
             .strict(true)
@@ -107,10 +108,10 @@ public class ConfigFileHandler {
     }
 
     private void notifyPlayers() {
-        Text message = Text.literal("Server: A new version of the server resource pack is available: ").append(
-            Text.literal("[Reload]").styled(style -> style.withColor(Formatting.GREEN)
+        Text message = Text.literal(DynamicResourcePack.modConfig.reloadResourcePackMessage.get()).append(
+            Text.literal(DynamicResourcePack.modConfig.reloadResourcePackAction.get()).styled(style -> style.withColor(Formatting.GREEN)
                 .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/resourcepack"))
-                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Reload the server resource pack")))
+                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal(DynamicResourcePack.modConfig.reloadResourcePackTooltip.get())))
             ));
 
         server.getPlayerManager().broadcast(message, false);
