@@ -4,9 +4,13 @@
 ![Modrinth Followers](https://img.shields.io/modrinth/followers/d64al7n8?color=#97ca00)
 ![Modrinth Game Versions](https://img.shields.io/modrinth/game-versions/d64al7n8?color=#97ca00)
 
-Watches `server.properties` for changes in resource-pack settings. When a change has been detected players will be prompted to load the new resource pack with the press of a button.
-
 > Warning: This mod is in Alpha and might not work. Use at your own risk.
+
+Update Minecraft server resource packs without interrupting gameplay!
+
+This mod watches for changes in the `server.properties` file. When any of the resource-pack settings change,
+the mod will send a message to all online players with a clickable button. When the player clicks the button
+the server pushes the new resource pack to the player.
 
 ## Thanks
 
