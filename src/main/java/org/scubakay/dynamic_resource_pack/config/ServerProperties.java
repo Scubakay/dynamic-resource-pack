@@ -20,7 +20,7 @@ public class ServerProperties {
     public ConfigEntry<String> prompt;
 
     public ServerProperties(ConfigBuilder builder) {
-        id = builder.entry("resource-pack-id", "");
+        id = builder.stringEntry("resource-pack-id", "");
         url = builder.stringEntry("resource-pack", "");
         hash = builder.stringEntry("resource-pack-sha1", "");
         required = builder.booleanEntry("require-resource-pack", false);
