@@ -12,14 +12,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class ServerProperties {
-    public ConfigEntry<UUID> id;
+    public ConfigEntry<String> id;
     public ConfigEntry<String> url;
     public ConfigEntry<String> hash;
     public ConfigEntry<Boolean> required;
     public ConfigEntry<String> prompt;
 
     public ServerProperties(ConfigBuilder builder) {
-        id = builder.entry("resource-pack-id", UUID.randomUUID());
+        id = builder.entry("resource-pack-id", UUID.randomUUID().toString());
         url = builder.stringEntry("resource-pack", "");
         hash = builder.stringEntry("resource-pack-sha1", "");
         required = builder.booleanEntry("require-resource-pack", false);
