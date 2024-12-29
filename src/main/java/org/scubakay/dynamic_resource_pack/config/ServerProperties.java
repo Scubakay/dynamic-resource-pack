@@ -9,7 +9,6 @@ import org.scubakay.dynamic_resource_pack.DynamicResourcePack;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 public class ServerProperties {
     public ConfigEntry<String> id;
@@ -19,7 +18,7 @@ public class ServerProperties {
     public ConfigEntry<String> prompt;
 
     public ServerProperties(ConfigBuilder builder) {
-        id = builder.entry("resource-pack-id", UUID.randomUUID().toString());
+        id = builder.entry("resource-pack-id", "");
         url = builder.stringEntry("resource-pack", "");
         hash = builder.stringEntry("resource-pack-sha1", "");
         required = builder.booleanEntry("require-resource-pack", false);
