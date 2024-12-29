@@ -78,7 +78,9 @@ public class ConfigFileHandler {
             DynamicResourcePack.LOGGER.info("{} has changed, reloading resource pack...", getConfigFile(server).getFileName());
             serverProperties = newConfig;
 
-            reloadDatapacks();
+            if (DynamicResourcePack.modConfig.runReloadOnResourcePackUpdate.get()) {
+                reloadDatapacks();
+            }
             notifyPlayers();
         }
     }
