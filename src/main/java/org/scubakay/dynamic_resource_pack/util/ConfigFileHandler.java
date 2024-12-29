@@ -14,7 +14,6 @@ import org.scubakay.dynamic_resource_pack.DynamicResourcePack;
 import org.scubakay.dynamic_resource_pack.config.ServerProperties;
 
 import java.nio.file.Path;
-import java.util.UUID;
 
 /**
  * Responsible for keeping track of the ServerProperties file
@@ -43,7 +42,7 @@ public class ConfigFileHandler {
 
     public ResourcePackSendS2CPacket getResourcePackSendS2CPacket() {
         return new ResourcePackSendS2CPacket(
-                UUID.fromString(serverProperties.id.get()),
+                serverProperties.getUUID(),
                 serverProperties.url.get(),
                 serverProperties.hash.get(),
                 serverProperties.required.get(),

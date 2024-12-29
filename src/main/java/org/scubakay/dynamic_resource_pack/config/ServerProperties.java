@@ -7,8 +7,10 @@ import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 import org.scubakay.dynamic_resource_pack.DynamicResourcePack;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 public class ServerProperties {
     public ConfigEntry<String> id;
@@ -41,6 +43,14 @@ public class ServerProperties {
                 DynamicResourcePack.LOGGER.error("Failed to parse prompt text " + promptString, e);
                 return Optional.empty();
             }
+        }
+    }
+
+    public UUID getUUID() {
+        if (this.id.get().isEmpty()) {
+            return UUID.nameUUIDFromBytes(this.url.get().getBytes(StandardCharsets.UTF_8));
+        } else {
+            return UUID.fromString(this.id.get());
         }
     }
 
