@@ -7,19 +7,20 @@ import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 import org.scubakay.dynamic_resource_pack.DynamicResourcePack;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
 public class ServerProperties {
-    public ConfigEntry<UUID> id;
+    public ConfigEntry<String> id;
     public ConfigEntry<String> url;
     public ConfigEntry<String> hash;
     public ConfigEntry<Boolean> required;
     public ConfigEntry<String> prompt;
 
     public ServerProperties(ConfigBuilder builder) {
-        id = builder.entry("resource-pack-id", UUID.randomUUID());
+        id = builder.stringEntry("resource-pack-id", "");
         url = builder.stringEntry("resource-pack", "");
         hash = builder.stringEntry("resource-pack-sha1", "");
         required = builder.booleanEntry("require-resource-pack", false);
@@ -42,6 +43,14 @@ public class ServerProperties {
                 DynamicResourcePack.LOGGER.error("Failed to parse prompt text " + promptString, e);
                 return Optional.empty();
             }
+        }
+    }
+
+    public UUID getUUID() {
+        if (this.id.get().isEmpty()) {
+            return UUID.nameUUIDFromBytes(this.url.get().getBytes(StandardCharsets.UTF_8));
+        } else {
+            return UUID.fromString(this.id.get());
         }
     }
 

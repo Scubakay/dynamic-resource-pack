@@ -42,7 +42,7 @@ public class ConfigFileHandler {
 
     public ResourcePackSendS2CPacket getResourcePackSendS2CPacket() {
         return new ResourcePackSendS2CPacket(
-                serverProperties.id.get(),
+                serverProperties.getUUID(),
                 serverProperties.url.get(),
                 serverProperties.hash.get(),
                 serverProperties.required.get(),
