@@ -1,6 +1,6 @@
-package org.scubakay.dynamic_resource_pack.util;
+package com.scubakay.dynamic_resource_pack.util;
 
-import org.scubakay.dynamic_resource_pack.DynamicResourcePack;
+import com.scubakay.ScubasServerTools;
 
 import java.nio.file.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -21,7 +21,7 @@ public class ConfigFileWatcher extends Thread {
 
     @Override
     public void run() {
-        DynamicResourcePack.LOGGER.info("Watching " + file.getFileName() + " for changes");
+        ScubasServerTools.LOGGER.info("Watching " + file.getFileName() + " for changes");
         try (final WatchService watchService = FileSystems.getDefault().newWatchService()) {
             final WatchKey watchKey = directory.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
             while (true) {
@@ -37,11 +37,11 @@ public class ConfigFileWatcher extends Thread {
                 // reset the key
                 boolean valid = wk.reset();
                 if (!valid) {
-                    DynamicResourcePack.LOGGER.error("Key has been unregistered");
+                    ScubasServerTools.LOGGER.error("Key has been unregistered");
                 }
             }
         } catch (Exception ex) {
-            DynamicResourcePack.LOGGER.error(ex.toString());
+            ScubasServerTools.LOGGER.error(ex.toString());
         }
     }
 }

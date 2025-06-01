@@ -1,8 +1,7 @@
 {
   "required": true,
-  "minVersion": "0.8",
-  "package": "org.scubakay.dynamic_resource_pack.mixin",
-  "compatibilityLevel": "JAVA_21",
+  "package": "com.scubakay.dynamic_resource_pack.mixin",
+  "compatibilityLevel": "JAVA_17",
   "mixins": [
     "SendResourcePackTaskMixin"
   ],

@@ -1,4 +1,4 @@
-package org.scubakay.dynamic_resource_pack.config;
+package com.scubakay.config;
 
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.configbuilder.entry.ConfigEntry;
