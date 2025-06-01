@@ -10,7 +10,7 @@
   "contact": {
     "sources": "https://github.com/scubakay/scubas-server-tools"
   },
-  "license": "CC0-1.0",
+  "license": "MIT",
   "icon": "assets/scubasservertools/icon.png",
   "environment": "*",
   "entrypoints": {
