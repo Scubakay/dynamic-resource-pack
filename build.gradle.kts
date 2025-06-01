@@ -26,12 +26,11 @@ group = mod.group
 base { archivesName.set(mod.id) }
 
 loom {
-    splitEnvironmentSourceSets()
+    serverOnlyMinecraftJar()
 
     mods {
         create("template") {
             sourceSet(sourceSets["main"])
-            sourceSet(sourceSets["client"])
         }
     }
 }
