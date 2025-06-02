@@ -15,7 +15,7 @@ stonecutter {
     centralScript = "build.gradle.kts"
 
     shared {
-        versions("1.21", "1.21.5")
+        versions("1.20.3", "1.20.5", "1.21", "1.21.5")
     }
     create(rootProject)
 }

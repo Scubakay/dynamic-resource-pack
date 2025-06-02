@@ -46,7 +46,11 @@ public class ConfigFileHandler {
                 serverProperties.url.get(),
                 serverProperties.hash.get(),
                 serverProperties.required.get(),
+                //? if >= 1.20.5 {
                 serverProperties.getPrompt(server.getRegistryManager())
+                //?} else {
+                /*serverProperties.getPrompt()
+                *///?}
         );
     }
 
@@ -125,7 +129,11 @@ public class ConfigFileHandler {
     }
 
     public Path getConfigDirectory(MinecraftServer server) {
+        //? if >= 1.21 {
         return server.getRunDirectory();
+        //?} else {
+        /*return server.getRunDirectory().toPath();
+        *///?}
     }
     public Path getConfigFile(MinecraftServer server) {
         return getConfigDirectory(server).resolve("server.properties");
