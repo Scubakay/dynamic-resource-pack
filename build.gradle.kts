@@ -110,6 +110,13 @@ tasks.register<Copy>("buildAndCollect") {
     dependsOn("build")
 }
 
+fabricApi {
+    configureDataGeneration {
+        createRunConfiguration = true
+        client = false
+    }
+}
+
 /*
 publishMods {
     file = tasks.remapJar.get().archiveFile

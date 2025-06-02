@@ -6,6 +6,12 @@ plugins {
 }
 stonecutter active "1.21.5" /* [SC] DO NOT EDIT */
 
+// Run datagen for every version
+stonecutter registerChiseled tasks.register("chiseledDatagen", stonecutter.chiseled) {
+    group = "project"
+    ofTask("runDatagen")
+}
+
 // Builds every version into `build/libs/{mod.version}/`
 stonecutter registerChiseled tasks.register("chiseledBuild", stonecutter.chiseled) {
     group = "project"

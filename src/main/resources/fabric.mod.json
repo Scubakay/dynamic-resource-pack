@@ -16,6 +16,9 @@
   "entrypoints": {
     "main": [
       "com.scubakay.ScubasServerTools"
+    ],
+    "fabric-datagen": [
+      "com.scubakay.zombies_cant_gather.ZombiesCantGather"
     ]
   },
   "mixins": [

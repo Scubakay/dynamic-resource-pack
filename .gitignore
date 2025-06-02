@@ -31,6 +31,8 @@ bin/
 # fabric
 
 run/
+*.cache/
+/versions/*/src/main/generated/
 
 # java
 
@@ -38,3 +40,4 @@ hs_err_*.log
 replay_*.log
 *.hprof
 *.jfr
+
