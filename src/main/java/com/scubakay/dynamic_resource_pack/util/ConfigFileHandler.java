@@ -115,7 +115,7 @@ public class ConfigFileHandler {
             //? if >= 1.21.5 {
                 .withClickEvent(new ClickEvent.RunCommand("/resourcepack"))
                 .withHoverEvent(new HoverEvent.ShowText(Text.literal(ScubasServerTools.modConfig.reloadResourcePackTooltip.get())))
-            //? } else {
+            //?} else {
                 /*.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/resourcepack"))
                 .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal(ScubasServerTools.modConfig.reloadResourcePackTooltip.get())))
             *///?}
