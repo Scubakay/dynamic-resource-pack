@@ -1,29 +1,25 @@
 {
   "schemaVersion": 1,
-  "id": "${id}",
+  "id": "dynamic_resource_pack",
   "version": "${version}",
-  "name": "${name}",
-  "description": "A collection of tools for managing a Minecraft SMP with friends.",
-  "authors": [
-    "Scubakay"
-  ],
-  "contact": {
-    "sources": "https://github.com/scubakay/scubas-server-tools"
-  },
-  "license": "MIT",
-  "icon": "assets/scubasservertools/icon.png",
-  "environment": "*",
+  "name": "Dynamic Resource Pack",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/dynamic_resource_pack/icon.png",
+  "environment": "server",
   "entrypoints": {
     "main": [
-      "com.scubakay.ScubasServerTools"
+      "org.scubakay.dynamic_resource_pack.DynamicResourcePack"
     ]
   },
   "mixins": [
     "dynamic_resource_pack.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.15",
-    "minecraft": "${mcdep}",
-    "fabric-api": "*"
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version_range}"
   }
 }
