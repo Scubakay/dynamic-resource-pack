@@ -1,41 +1,33 @@
-package com.scubakay;
+package org.scubakay.dynamic_resource_pack;
 
-import com.scubakay.config.ModConfig;
-import com.scubakay.dynamic_resource_pack.DynamicResourcePack;
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.server.MinecraftServer;
+import org.scubakay.dynamic_resource_pack.command.ResourceCommand;
+import org.scubakay.dynamic_resource_pack.config.ModConfig;
+import org.scubakay.dynamic_resource_pack.util.ConfigFileHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 
-public class ScubasServerTools implements ModInitializer {
-    // This logger is used to write text to the console and the log file.
-    // It is considered best practice to use your mod id as the logger's name.
-    // That way, it's clear which mod wrote info, warnings, and errors.
+public class DynamicResourcePack implements ModInitializer {
     public static final String MOD_ID = "DynamicResourcePack";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-    public static final String VERSION = /*$ mod_version*/ "0.2.0";
 
     public static ModConfig modConfig;
 
-
     @Override
     public void onInitialize() {
-        //? if !release
-        /*LOGGER.warn("I'm still a template!");*/
+        ConfigFileHandler.registerEvents();
+        CommandRegistrationCallback.EVENT.register(ResourceCommand::register);
 
-        //? if fapi: <0.95 {
-        /*LOGGER.info("Fabric API is old on this version");
-        LOGGER.info("Please update!");
-        *///?}
         modConfig = ConfigBuilder.builder(ModConfig::new)
                 .path(getConfigFile())
                 .strict(true)
                 .saveAfterBuild(true)
                 .build();
-
-        DynamicResourcePack.initialize();
     }
 
     public Path getConfigDirectory() {

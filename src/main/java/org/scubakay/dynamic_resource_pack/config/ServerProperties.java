@@ -1,11 +1,11 @@
-package com.scubakay.dynamic_resource_pack.config;
+package org.scubakay.dynamic_resource_pack.config;
 
-import com.scubakay.ScubasServerTools;
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.configbuilder.entry.ConfigEntry;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
+import org.scubakay.dynamic_resource_pack.DynamicResourcePack;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
@@ -40,7 +40,7 @@ public class ServerProperties {
                 );
             } catch (Exception e) {
                 // Need to use concatenation to log the exception
-                ScubasServerTools.LOGGER.error("Failed to parse prompt text " + promptString, e);
+                DynamicResourcePack.LOGGER.error("Failed to parse prompt text " + promptString, e);
                 return Optional.empty();
             }
         }

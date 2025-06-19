@@ -1,8 +1,8 @@
-package com.scubakay.dynamic_resource_pack.mixin;
+package org.scubakay.dynamic_resource_pack.mixin;
 
-import com.scubakay.dynamic_resource_pack.util.ConfigFileHandler;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.network.SendResourcePackTask;
+import org.scubakay.dynamic_resource_pack.util.ConfigFileHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

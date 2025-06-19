@@ -1,4 +1,4 @@
-package com.scubakay.dynamic_resource_pack.util;
+package org.scubakay.dynamic_resource_pack.util;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
