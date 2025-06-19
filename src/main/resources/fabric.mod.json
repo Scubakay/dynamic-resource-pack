@@ -1,12 +1,24 @@
 {
   "schemaVersion": 1,
-  "id": "dynamic_resource_pack",
+  "id": "${id}",
   "version": "${version}",
-  "name": "Dynamic Resource Pack",
-  "description": "",
-  "authors": [],
-  "contact": {},
-  "license": "All-Rights-Reserved",
+  "name": "${name}",
+  "description": "Update Minecraft server resource packs without interrupting gameplay!",
+  "authors": [
+    "Scubakay"
+  ],
+  "contact": {
+    "issues": "https://github.com/Scubakay/dynamic-resource-pack/issues",
+    "sources": "https://github.com/Scubakay/dynamic-resource-pack"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/t8AYBrmqbD"
+      }
+    }
+  },
+  "license": "MIT",
   "icon": "assets/dynamic_resource_pack/icon.png",
   "environment": "server",
   "entrypoints": {
@@ -18,8 +30,8 @@
     "dynamic_resource_pack.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=${loader_version}",
-    "fabric": "*",
-    "minecraft": "${minecraft_version_range}"
+    "fabricloader": ">=0.15",
+    "minecraft": "${mcdep}",
+    "fabric-api": "*"
   }
 }

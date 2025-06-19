@@ -28,7 +28,6 @@ public class ConfigFileHandler {
     public ConfigFileHandler(MinecraftServer server) {
         this.server = server;
         serverProperties = loadServerProperties();
-
     }
 
     public static void registerEvents() {
@@ -108,14 +107,18 @@ public class ConfigFileHandler {
         ServerCommandSource source = server.getCommandSource();
         manager.executeWithPrefix(source, "reload");
     }
-    // new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/resourcepack")
+
     private void notifyPlayers() {
         Text message = Text.literal(DynamicResourcePack.modConfig.reloadResourcePackMessage.get()).append(
             Text.literal(DynamicResourcePack.modConfig.reloadResourcePackAction.get()).styled(style -> style.withColor(Formatting.GREEN)
+                //? >= 1.21.5 {
                 .withClickEvent(new ClickEvent.RunCommand("/resourcepack"))
                 .withHoverEvent(new HoverEvent.ShowText(Text.literal(DynamicResourcePack.modConfig.reloadResourcePackTooltip.get())))
+                //?} else {
+                /*.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/resourcepack"))
+                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal(DynamicResourcePack.modConfig.reloadResourcePackTooltip.get())))
+                *///?}
             ));
-
         server.getPlayerManager().broadcast(message, false);
     }
 
