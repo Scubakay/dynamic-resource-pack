@@ -1,11 +1,8 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-
 plugins {
     `maven-publish`
     id("fabric-loom")
     //id("dev.kikugie.j52j")
     id("me.modmuss50.mod-publish-plugin")
-    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 class ModData {
@@ -36,12 +33,11 @@ group = mod.group
 base { archivesName.set(mod.id) }
 
 loom {
-    splitEnvironmentSourceSets()
+    serverOnlyMinecraftJar()
 
     mods {
         create("template") {
             sourceSet(sourceSets["main"])
-            sourceSet(sourceSets["client"])
         }
     }
 }
@@ -54,11 +50,6 @@ repositories {
     strictMaven("https://www.cursemaven.com", "CurseForge", "curse.maven")
     strictMaven("https://api.modrinth.com/maven", "Modrinth", "maven.modrinth")
     strictMaven("https://maven.maxhenkel.de/repository/public", "MaxHenkel")
-}
-
-val shadowLibrary: Configuration by configurations.creating {
-    isCanBeResolved = true
-    isCanBeConsumed = false
 }
 
 dependencies {
@@ -105,18 +96,6 @@ java {
     val java = if (stonecutter.eval(mcVersion, ">=1.20.6")) JavaVersion.VERSION_21 else JavaVersion.VERSION_17
     targetCompatibility = java
     sourceCompatibility = java
-}
-
-tasks.named<ShadowJar>("shadowJar") {
-    configurations = listOf(shadowLibrary)
-    archiveClassifier = "dev-shadow"
-    relocate("de.maxhenkel.admiral", "com.scubakay.autorelog.admiral")
-}
-
-tasks {
-    remapJar {
-        inputFile = shadowJar.get().archiveFile
-    }
 }
 
 tasks.processResources {
