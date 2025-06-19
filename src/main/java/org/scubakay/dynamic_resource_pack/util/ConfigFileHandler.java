@@ -74,7 +74,6 @@ public class ConfigFileHandler {
     private void onConfigFileChange() {
         ServerProperties newConfig = loadServerProperties();
         if (!newConfig.equals(serverProperties)) {
-            DynamicResourcePack.LOGGER.info("{} has changed, reloading resource pack...", getConfigFile(server).getFileName());
             serverProperties = newConfig;
 
             if (DynamicResourcePack.modConfig.runReloadOnResourcePackUpdate.get()) {

@@ -3,6 +3,7 @@ package org.scubakay.dynamic_resource_pack.util;
 import org.scubakay.dynamic_resource_pack.DynamicResourcePack;
 
 import java.nio.file.*;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ConfigFileWatcher extends Thread {
@@ -10,6 +11,8 @@ public class ConfigFileWatcher extends Thread {
     private final Runnable runnable;
     private final Path directory;
     private final Path file;
+    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private volatile ScheduledFuture<?> scheduledTask = null;
 
     public ConfigFileWatcher(Path directory, Path file, Runnable runnable) {
         this.runnable = runnable;
@@ -17,21 +20,29 @@ public class ConfigFileWatcher extends Thread {
         this.directory = directory;
     }
 
-    public void stopThread() { stop.set(true); }
+    public void stopThread() {
+        stop.set(true);
+        executor.shutdownNow();
+    }
 
     @Override
     public void run() {
         DynamicResourcePack.LOGGER.info("Watching " + file.getFileName() + " for changes");
         try (final WatchService watchService = FileSystems.getDefault().newWatchService()) {
             final WatchKey watchKey = directory.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
-            while (true) {
-                Thread.sleep( 50 );
+            while (!stop.get()) {
+                Thread.sleep(50);
                 final WatchKey wk = watchService.take();
                 for (WatchEvent<?> event : wk.pollEvents()) {
                     //we only register "ENTRY_MODIFY" so the context is always a Path.
                     final Path changed = (Path) event.context();
                     if (changed.endsWith(file.getFileName())) {
-                        runnable.run();
+                        if (scheduledTask != null && !scheduledTask.isDone()) {
+                            scheduledTask.cancel(false);
+                        }
+                        int secondsDelay = 5;
+                        DynamicResourcePack.LOGGER.info("{} has changed, reloading resource pack in {} seconds...", file.getFileName(), secondsDelay);
+                        scheduledTask = executor.schedule(runnable, secondsDelay, TimeUnit.SECONDS);
                     }
                 }
                 // reset the key
