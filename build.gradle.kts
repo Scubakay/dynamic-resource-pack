@@ -74,7 +74,7 @@ dependencies {
     include("de.maxhenkel.configbuilder:configbuilder:${deps["henkel_config"]}")
 
     // Dev dependencies
-    modLocalRuntime("maven.modrinth:no-chat-reports:${dev["no_chat_reports"]}")
+    // modLocalRuntime("maven.modrinth:no-chat-reports:${dev["no_chat_reports"]}")
 }
 
 loom {

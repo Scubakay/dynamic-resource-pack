@@ -11,7 +11,7 @@ plugins {
     id("dev.kikugie.stonecutter") version "0.7-alpha.22"
 }
 
-var devVersion = "1.21.5"
+var devVersion = "1.21.6"
 
 stonecutter {
     kotlinController = true

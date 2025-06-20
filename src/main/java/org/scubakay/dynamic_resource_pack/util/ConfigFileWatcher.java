@@ -11,6 +11,8 @@ public class ConfigFileWatcher extends Thread {
     private final Runnable runnable;
     private final Path directory;
     private final Path file;
+    private static final int DEBOUNCE_MILLIS = 5000; // 5 seconds
+    private volatile long lastTriggerTime = 0;
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
     private volatile ScheduledFuture<?> scheduledTask = null;
 
@@ -29,23 +31,27 @@ public class ConfigFileWatcher extends Thread {
     public void run() {
         DynamicResourcePack.LOGGER.info("Watching " + file.getFileName() + " for changes");
         try (final WatchService watchService = FileSystems.getDefault().newWatchService()) {
-            final WatchKey watchKey = directory.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
+            directory.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
             while (!stop.get()) {
+                //noinspection BusyWait
                 Thread.sleep(50);
                 final WatchKey wk = watchService.take();
                 for (WatchEvent<?> event : wk.pollEvents()) {
-                    //we only register "ENTRY_MODIFY" so the context is always a Path.
                     final Path changed = (Path) event.context();
                     if (changed.endsWith(file.getFileName())) {
-                        if (scheduledTask != null && !scheduledTask.isDone()) {
-                            scheduledTask.cancel(false);
+                        long now = System.currentTimeMillis();
+                        if (now - lastTriggerTime > DEBOUNCE_MILLIS) {
+                            lastTriggerTime = now;
+                            if (scheduledTask != null && !scheduledTask.isDone()) {
+                                scheduledTask.cancel(false);
+                            }
+                            DynamicResourcePack.LOGGER.info("{} has changed, scheduling resource pack reload...", file.getFileName());
+                            scheduledTask = executor.schedule(runnable, 1, TimeUnit.SECONDS);
+                        } else {
+                            DynamicResourcePack.LOGGER.info("Debounced duplicate event {} for {}", event.kind().name(), file.getFileName());
                         }
-                        int secondsDelay = 5;
-                        DynamicResourcePack.LOGGER.info("{} has changed, reloading resource pack in {} seconds...", file.getFileName(), secondsDelay);
-                        scheduledTask = executor.schedule(runnable, secondsDelay, TimeUnit.SECONDS);
                     }
                 }
-                // reset the key
                 boolean valid = wk.reset();
                 if (!valid) {
                     DynamicResourcePack.LOGGER.error("Key has been unregistered");
