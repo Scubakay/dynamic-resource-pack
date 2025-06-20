@@ -1,19 +1,19 @@
 package org.scubakay.dynamic_resource_pack.util;
 
-import de.maxhenkel.configbuilder.ConfigBuilder;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.network.packet.s2c.common.ResourcePackSendS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.dedicated.ServerPropertiesHandler;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.scubakay.dynamic_resource_pack.DynamicResourcePack;
-import org.scubakay.dynamic_resource_pack.config.ServerProperties;
 
 import java.nio.file.Path;
+import java.util.Optional;
 
 /**
  * Responsible for keeping track of the ServerProperties file
@@ -21,31 +21,30 @@ import java.nio.file.Path;
 public class ConfigFileHandler {
     private static ConfigFileHandler instance;
 
-    public ServerProperties serverProperties;
     private final MinecraftServer server;
     private ConfigFileWatcher watcher;
+    private final Path file;
+    private MinecraftServer.ServerResourcePackProperties packProperties;
 
-    public ConfigFileHandler(MinecraftServer server) {
+    private ConfigFileHandler(MinecraftServer server) {
         this.server = server;
-        serverProperties = loadServerProperties();
+        this.file = getConfigFile(server);
     }
 
     public static void registerEvents() {
-        ServerLifecycleEvents.SERVER_STARTED.register((MinecraftServer server) -> {
-            getInstance(server).startConfigFileWatcher();
-        });
-        ServerLifecycleEvents.SERVER_STOPPING.register((MinecraftServer server) -> {
-            getInstance(server).stopConfigFileWatcher();
-        });
+        ServerLifecycleEvents.SERVER_STARTED.register((MinecraftServer server) ->
+                getInstance(server).startConfigFileWatcher());
+        ServerLifecycleEvents.SERVER_STOPPING.register((MinecraftServer server) ->
+                getInstance(server).stopConfigFileWatcher());
     }
 
     public ResourcePackSendS2CPacket getResourcePackSendS2CPacket() {
         return new ResourcePackSendS2CPacket(
-                serverProperties.getUUID(),
-                serverProperties.url.get(),
-                serverProperties.hash.get(),
-                serverProperties.required.get(),
-                serverProperties.getPrompt(server.getRegistryManager())
+                this.packProperties.id(),
+                this.packProperties.url(),
+                this.packProperties.hash(),
+                this.packProperties.isRequired(),
+                Optional.ofNullable(this.packProperties.prompt())
         );
     }
 
@@ -55,16 +54,13 @@ public class ConfigFileHandler {
         }
         return instance;
     }
-    public static ConfigFileHandler getInstance() {
-        return instance;
-    }
 
     private void startConfigFileWatcher() {
         if (watcher == null) {
             watcher = new ConfigFileWatcher(
-                getConfigDirectory(server),
-                getConfigFile(server),
-                this::onConfigFileChange
+                    getConfigDirectory(server),
+                    getConfigFile(server),
+                    this::onConfigFileChange
             );
             watcher.setDaemon(true);
             watcher.start();
@@ -72,30 +68,19 @@ public class ConfigFileHandler {
     }
 
     private void onConfigFileChange() {
-        ServerProperties newConfig = loadServerProperties();
-        if (!newConfig.equals(serverProperties)) {
-            serverProperties = newConfig;
-
+        ServerPropertiesHandler.load(file).serverResourcePackProperties.ifPresentOrElse(prop -> {
+            this.packProperties = prop;
             if (DynamicResourcePack.modConfig.runReloadOnResourcePackUpdate.get()) {
                 reloadDatapacks();
             }
             notifyPlayers();
-        }
+        }, () -> DynamicResourcePack.LOGGER.error("Something went wrong trying to load the new server pack properties"));
     }
 
     private void stopConfigFileWatcher() {
         if (watcher != null) {
             watcher.stopThread();
         }
-    }
-
-    public ServerProperties loadServerProperties() {
-        return ConfigBuilder.builder(ServerProperties::new)
-            .path(getConfigFile(server))
-            .strict(true)
-            .saveAfterBuild(false)
-            .keepOrder(true)
-            .build();
     }
 
     /**
@@ -109,22 +94,23 @@ public class ConfigFileHandler {
 
     private void notifyPlayers() {
         Text message = Text.literal(DynamicResourcePack.modConfig.reloadResourcePackMessage.get()).append(
-            Text.literal(DynamicResourcePack.modConfig.reloadResourcePackAction.get()).styled(style -> style.withColor(Formatting.GREEN)
-                //? >= 1.21.5 {
-                .withClickEvent(new ClickEvent.RunCommand("/resourcepack"))
-                .withHoverEvent(new HoverEvent.ShowText(Text.literal(DynamicResourcePack.modConfig.reloadResourcePackTooltip.get())))
-                //?} else {
+                Text.literal(DynamicResourcePack.modConfig.reloadResourcePackAction.get()).styled(style -> style.withColor(Formatting.GREEN)
+                                //? >= 1.21.5 {
+                                .withClickEvent(new ClickEvent.RunCommand("/resourcepack"))
+                                .withHoverEvent(new HoverEvent.ShowText(Text.literal(DynamicResourcePack.modConfig.reloadResourcePackTooltip.get())))
+                        //?} else {
                 /*.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/resourcepack"))
                 .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal(DynamicResourcePack.modConfig.reloadResourcePackTooltip.get())))
                 *///?}
-            ));
+                ));
         server.getPlayerManager().broadcast(message, false);
     }
 
-    public Path getConfigDirectory(MinecraftServer server) {
+    public static Path getConfigDirectory(MinecraftServer server) {
         return server.getRunDirectory();
     }
-    public Path getConfigFile(MinecraftServer server) {
+
+    public static Path getConfigFile(MinecraftServer server) {
         return getConfigDirectory(server).resolve("server.properties");
     }
 }
