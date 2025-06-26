@@ -3,13 +3,14 @@
   "id": "${id}",
   "version": "${version}",
   "name": "${name}",
-  "description": "Update Minecraft server resource packs without interrupting gameplay!",
+  "description": "${description}",
   "authors": [
     "Scubakay"
   ],
   "contact": {
-    "issues": "https://github.com/Scubakay/dynamic-resource-pack/issues",
-    "sources": "https://github.com/Scubakay/dynamic-resource-pack"
+    "homepage": "${homepage}",
+    "sources": "${repository}",
+    "issues": "${repository}/issues"
   },
   "custom": {
     "modmenu": {
@@ -31,7 +32,7 @@
   ],
   "depends": {
     "fabricloader": ">=0.15",
-    "minecraft": "${mcdep}",
+    "minecraft": "${range}",
     "fabric-api": "*"
   }
 }
