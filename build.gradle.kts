@@ -220,5 +220,7 @@ publishing {
             from(components["java"])
         }
     }
+} else {
+    logger.lifecycle("Skipping publishing ${projectDir.name}: 'mod.publish' property is false.")
 }
 //endregion
