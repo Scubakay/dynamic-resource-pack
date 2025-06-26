@@ -8,7 +8,7 @@ pluginManagement {
 }
 
 plugins {
-    id("dev.kikugie.stonecutter") version "0.7-alpha.22"
+    id("dev.kikugie.stonecutter") version "0.7-beta.3"
 }
 
 stonecutter {
@@ -16,7 +16,7 @@ stonecutter {
     centralScript = "build.gradle.kts"
 
     shared {
-        vers("dev", "1.21.6")
+        vers("dev", "1.21.7-rc1")
         versions("1.21.5", "1.21")
         vcsVersion = "dev"
     }
