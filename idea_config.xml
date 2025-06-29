@@ -1,0 +1,17 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" factoryName="Application" name="%ENTRY_NAME%" type="Application">
+    <option name="MAIN_CLASS_NAME" value="%MAIN_CLASS%"/>
+    <module name="%MODULE_NAME%"/>
+    <option name="PROGRAM_PARAMETERS" value="%PROGRAM_PARAMETERS%"/>
+    <option name="VM_PARAMETERS" value="%VM_PARAMETERS%"/>
+    <option name="WORKING_DIRECTORY" value="%WORKING_DIRECTORY%"/>
+    <method v="2">
+      <option enabled="true" name="Make"/>
+    </method>
+    <envs>
+    </envs>
+    <shortenClasspath name="ARGS_FILE"/>
+    <classpathModifications/>
+  </configuration>
+</component>
+

@@ -1,9 +1,9 @@
 package org.scubakay.dynamic_resource_pack;
 
 import de.maxhenkel.configbuilder.ConfigBuilder;
+import dev.kikugie.fletching_table.annotation.fabric.Entrypoint;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.server.MinecraftServer;
 import org.scubakay.dynamic_resource_pack.command.ResourceCommand;
 import org.scubakay.dynamic_resource_pack.config.ModConfig;
 import org.scubakay.dynamic_resource_pack.util.ConfigFileHandler;
@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 
+@Entrypoint
 public class DynamicResourcePack implements ModInitializer {
     public static final String MOD_ID = "DynamicResourcePack";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
