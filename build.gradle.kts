@@ -1,3 +1,5 @@
+import me.modmuss50.mpp.ReleaseType
+
 //import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
@@ -63,6 +65,7 @@ class Environment {
     val publish = property("mc.publish").toString().toBoolean() && property("mod.id").toString() != "template"
     val modrinthId = property("publish.modrinth").toString()
     val curseforgeId = property("publish.curseforge").toString()
+    val channel = ReleaseType.of(property("publish.channel").toString())
 }
 
 class ModDependencies(private val prefix: String) {
@@ -86,6 +89,13 @@ base { archivesName.set(mod.id) }
 
 loom {
     splitEnvironmentSourceSets()
+
+    mods {
+        create("template") {
+            sourceSet(sourceSets["main"])
+            sourceSet(sourceSets["client"])
+        }
+    }
 
     decompilers {
         get("vineflower").apply { // Adds names to lambdas - useful for mixins
@@ -121,7 +131,7 @@ dependencies {
     include("de.maxhenkel.configbuilder:configbuilder:${deps["henkel_config"]}")
 
     // Dev dependencies
-    // modLocalRuntime("maven.modrinth:no-chat-reports:${dev["no_chat_reports"]}")
+    modLocalRuntime("maven.modrinth:no-chat-reports:${dev["no_chat_reports"]}")
 }
 
 //region Building
@@ -173,7 +183,7 @@ publishMods {
     displayName = "${mod.name} ${mod.version} for ${env.title}"
     version = mod.version
     changelog = rootProject.file("CHANGELOG.md").readText()
-    type = STABLE
+    type = env.channel
     modLoaders.add("fabric")
 
     dryRun = !env.publish
@@ -181,7 +191,7 @@ publishMods {
             || (env.curseforgeId != "..." && providers.environmentVariable("CURSEFORGE_TOKEN").getOrNull() == null)
 
     modrinth {
-        projectId = property("publish.modrinth").toString()
+        projectId = env.modrinthId
         accessToken = providers.environmentVariable("MODRINTH_TOKEN")
         minecraftVersions.addAll(env.targets)
         requires {
@@ -191,7 +201,7 @@ publishMods {
 
 //    Uncomment publishing order in stonecutter.gradle.kts too if you want to publish to Curseforge
 //    curseforge {
-//        projectId = property("publish.curseforge").toString()
+//        projectId = env.curseforgeId
 //        accessToken = providers.environmentVariable("CURSEFORGE_TOKEN")
 //        minecraftVersions.addAll(mod.targets)
 //        requires {
