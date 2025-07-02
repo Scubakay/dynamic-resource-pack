@@ -1,3 +1,5 @@
+import me.modmuss50.mpp.ReleaseType
+
 //import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
