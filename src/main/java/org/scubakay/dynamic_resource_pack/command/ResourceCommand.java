@@ -22,7 +22,7 @@ public class ResourceCommand {
 
     public static int reloadResourcepack(CommandContext<ServerCommandSource> context) {
         final ServerPlayNetworkHandler handler = Objects.requireNonNull(context.getSource().getPlayer()).networkHandler;
-        MinecraftServer server = context.getSource()./*? if >=1.21.9 { */getWorld()./*? } */getServer();
+        MinecraftServer server = context.getSource()./*? if >=1.21.9 {*/getWorld()./*?}*/getServer();
         handler.sendPacket(ConfigFileHandler.getInstance(server).getResourcePackSendS2CPacket());
         return Command.SINGLE_SUCCESS;
     }

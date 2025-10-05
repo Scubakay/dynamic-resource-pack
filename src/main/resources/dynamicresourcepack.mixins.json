@@ -3,7 +3,6 @@
   "minVersion": "0.8",
   "package": "org.scubakay.dynamic_resource_pack.mixin",
   "compatibilityLevel": "JAVA_21",
-  "mixins": [],
   "injectors": {
     "defaultRequire": 1
   }

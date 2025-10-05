@@ -25,6 +25,7 @@ public class ConfigFileHandler {
     private ConfigFileWatcher watcher;
     private final Path file;
     private MinecraftServer.ServerResourcePackProperties packProperties;
+    private boolean started;
 
     private ConfigFileHandler(MinecraftServer server) {
         this.server = server;
@@ -32,7 +33,7 @@ public class ConfigFileHandler {
     }
 
     public static void registerEvents() {
-        ServerLifecycleEvents.SERVER_STARTED.register((MinecraftServer server) ->
+        ServerLifecycleEvents.SERVER_STARTING.register((MinecraftServer server) ->
                 getInstance(server).startConfigFileWatcher());
         ServerLifecycleEvents.SERVER_STOPPING.register((MinecraftServer server) ->
                 getInstance(server).stopConfigFileWatcher());
@@ -56,6 +57,7 @@ public class ConfigFileHandler {
     }
 
     private void startConfigFileWatcher() {
+        onConfigFileChange();
         if (watcher == null) {
             watcher = new ConfigFileWatcher(
                     getConfigDirectory(server),
@@ -70,10 +72,14 @@ public class ConfigFileHandler {
     private void onConfigFileChange() {
         ServerPropertiesHandler.load(file).serverResourcePackProperties.ifPresentOrElse(prop -> {
             this.packProperties = prop;
-            if (DynamicResourcePack.modConfig.runReloadOnResourcePackUpdate.get()) {
-                reloadDatapacks();
+            if (!started) {
+                started = true;
+            } else {
+                if (DynamicResourcePack.modConfig.runReloadOnResourcePackUpdate.get()) {
+                    reloadDatapacks();
+                }
+                notifyPlayers();
             }
-            notifyPlayers();
         }, () -> DynamicResourcePack.LOGGER.error("Something went wrong trying to load the new server pack properties"));
     }
 
@@ -95,7 +101,7 @@ public class ConfigFileHandler {
     private void notifyPlayers() {
         Text message = Text.literal(DynamicResourcePack.modConfig.reloadResourcePackMessage.get()).append(
                 Text.literal(DynamicResourcePack.modConfig.reloadResourcePackAction.get()).styled(style -> style.withColor(Formatting.GREEN)
-                                //? >= 1.21.5 {
+                                //? if >= 1.21.5 {
                                 .withClickEvent(new ClickEvent.RunCommand("/resourcepack"))
                                 .withHoverEvent(new HoverEvent.ShowText(Text.literal(DynamicResourcePack.modConfig.reloadResourcePackTooltip.get())))
                         //?} else {
@@ -112,5 +118,13 @@ public class ConfigFileHandler {
 
     public static Path getConfigFile(MinecraftServer server) {
         return getConfigDirectory(server).resolve("server.properties");
+    }
+
+    /**
+     * Returns the current ServerResourcePackProperties, or null if not loaded yet.
+     */
+    public static MinecraftServer.ServerResourcePackProperties getResourcePackProperties(MinecraftServer server) {
+        ConfigFileHandler handler = getInstance(server);
+        return handler.packProperties;
     }
 }

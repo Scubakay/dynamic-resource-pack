@@ -126,8 +126,6 @@ group = mod.group
 base { archivesName.set(mod.id) }
 //endregion
 
-
-
 loom {
     splitEnvironmentSourceSets()
 
