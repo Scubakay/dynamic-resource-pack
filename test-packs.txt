@@ -1,0 +1,19 @@
+resource-pack=https\://cdn.modrinth.com/data/9YZxTdpf/versions/iZh38d3u/arcadia-roleplay-data.3.16.1.zip
+resource-pack-id=8fe38f19-1522-4e7d-81ba-571e2a002b7f
+resource-pack-prompt={"text"\:"Arcadia Roleplay Data.","color"\:"yellow"}
+resource-pack-sha1=31fd1c97a104a86351a46cdc12baa60ae891c8eb
+
+resource-pack=https\://cdn.modrinth.com/data/rox3U8B6/versions/qFONtidX/Bare%20Bones%201.21.9.zip
+resource-pack-id=8fe38f19-1522-4e7d-81ba-571e2a002b7f
+resource-pack-prompt={"text"\:"Bare Bones.","color"\:"yellow"}
+resource-pack-sha1=914c515dff7cbc8a6289391ddd4f59c0d307bf98
+
+resource-pack=https\://cdn.modrinth.com/data/GwGMfCCc/versions/FDiuxJK6/Default%20HD%2064x%20Demo%201.3.2.zip
+resource-pack-id=8fe38f19-1522-4e7d-81ba-571e2a002b7f
+resource-pack-prompt={"text"\:"Default HD.","color"\:"yellow"}
+resource-pack-sha1=9407e30b678c5842ceb5156a2dba096a9c3ef870
+
+
+
+
+

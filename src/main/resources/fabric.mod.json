@@ -22,14 +22,6 @@
   "license": "MIT",
   "icon": "assets/dynamic_resource_pack/icon.png",
   "environment": "server",
-  "entrypoints": {
-    "main": [
-      "org.scubakay.dynamic_resource_pack.DynamicResourcePack"
-    ]
-  },
-  "mixins": [
-    "dynamic_resource_pack.mixins.json"
-  ],
   "depends": {
     "fabricloader": ">=0.15",
     "minecraft": "${range}",

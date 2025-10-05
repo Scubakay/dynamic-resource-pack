@@ -1,14 +1,15 @@
 import me.modmuss50.mpp.ReleaseType
-
+import kotlin.text.split
+import kotlin.text.trim
 //import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     `maven-publish`
     id("fabric-loom")
     //id("dev.kikugie.j52j")
-    kotlin("jvm") version "2.1.21" // Add this line for the Kotlin plugin
-    id("com.google.devtools.ksp") version "2.1.21-2.0.2"
-    id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.4"
+    kotlin("jvm") version "2.2.0"
+    id("com.google.devtools.ksp") version "2.2.0-2.0.2"
+    id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.17"
     id("me.modmuss50.mod-publish-plugin")
     //id("com.github.johnrengelman.shadow") version "8.1.1"
 }
@@ -62,10 +63,49 @@ class Environment {
     val range = property("mc.range").toString()
     val title = property("mc.title").toString()
     val targets = property("mc.targets").toString().split("\\s+".toRegex()).map { it.trim() }
-    val publish = property("mc.publish").toString().toBoolean() && property("mod.id").toString() != "template"
+
+    val yarnBuild = property("build.yarn_build").toString()
+    val fabricLoader = property("build.fabric_loader").toString()
+    val fabricApi = property("build.fabric_api").toString()
+
+    val isFabric = fabricLoader != "[VERSIONED]"
+    val loader = if (isFabric) "fabric" else "neoforge"
+
+    val channel = ReleaseType.of(property("publish.channel").toString())
+    val dryRun = property("publish.dry_run").toString().toBoolean() || property("mod.id").toString() == "template"
     val modrinthId = property("publish.modrinth").toString()
     val curseforgeId = property("publish.curseforge").toString()
-    val channel = ReleaseType.of(property("publish.channel").toString())
+
+    val modrinthVersionedRuntime = project.properties.filter { (dep, _) -> dep.startsWith("modrinth.runtime.") }
+    val modrinthVersionedImplementation = project.properties.filter { (dep, _) -> dep.startsWith("modrinth.implementation.") }
+    val modrinthVersionedInclude = project.properties.filter { (dep, _) -> dep.startsWith("modrinth.include.") }
+
+    val modrinthRuntime = property("modrinth.runtime").toString()
+        .split(",")
+        .map { it.trim() }
+        .filter { it.isNotEmpty() }
+        .filter { checkSpecified("modrinth.runtime.$it") }
+        .filter { it !in modrinthVersionedRuntime.keys.map { k -> k.removePrefix("modrinth.runtime.") } }
+
+    val modrinthImplementation = property("modrinth.implementation").toString()
+        .split(",")
+        .map { it.trim() }
+        .filter { it.isNotEmpty() }
+        .filter { checkSpecified("modrinth.implementation.$it") }
+        .filter { it !in modrinthVersionedImplementation.keys.map { k -> k.removePrefix("modrinth.implementation.") } }
+
+    val modrinthInclude = property("modrinth.include").toString()
+        .split(",")
+        .map { it.trim() }
+        .filter { it.isNotEmpty() }
+        .filter { checkSpecified("modrinth.include.$it") }
+        .filter { it !in modrinthVersionedInclude.keys.map { k -> k.removePrefix("modrinth.include.") } }
+}
+
+fun checkSpecified(depName: String): Boolean {
+    val property = findProperty(depName)
+    // Allow auto resolution if property is missing or set to [VERSIONED]
+    return property == null || property == "[VERSIONED]"
 }
 
 class ModDependencies(private val prefix: String) {
@@ -76,16 +116,17 @@ class ModDependencies(private val prefix: String) {
     }
 }
 
+val deps = ModDependencies("deps")
 val mod = ModData()
 val env = Environment()
-val deps = ModDependencies("deps")
-val dev = ModDependencies("dev")
 val scVersion = stonecutter.current.version
 
 version = "${mod.version}+${env.title}"
 group = mod.group
 base { archivesName.set(mod.id) }
 //endregion
+
+
 
 loom {
     splitEnvironmentSourceSets()
@@ -110,6 +151,12 @@ loom {
     }
 }
 
+fletchingTable {
+    mixins.create("main") {
+        mixin("default", "${mod.id}.mixins.json")
+    }
+}
+
 repositories {
     fun strictMaven(url: String, alias: String, vararg groups: String) = exclusiveContent {
         forRepository { maven(url) { name = alias } }
@@ -122,16 +169,31 @@ repositories {
 
 dependencies {
     minecraft("com.mojang:minecraft:$scVersion")
-    mappings("net.fabricmc:yarn:$scVersion+build.${deps["yarn_build"]}:v2")
-    modImplementation("net.fabricmc:fabric-loader:${deps["fabric_loader"]}")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${deps["fabric_api"]}")
+    mappings("net.fabricmc:yarn:$scVersion+build.${env.yarnBuild}:v2")
+    if (env.isFabric) {
+        modImplementation("net.fabricmc:fabric-loader:${env.fabricLoader}")
+        modImplementation("net.fabricmc.fabric-api:fabric-api:${env.fabricApi}")
+    }
 
     // Dependencies
     implementation("de.maxhenkel.configbuilder:configbuilder:${deps["henkel_config"]}")
     include("de.maxhenkel.configbuilder:configbuilder:${deps["henkel_config"]}")
 
-    // Dev dependencies
-    modLocalRuntime("maven.modrinth:no-chat-reports:${dev["no_chat_reports"]}")
+    // Automated dependency resolution
+    env.modrinthRuntime.forEach { dep -> modLocalRuntime(fletchingTable.modrinth(dep, stonecutter.current.version, env.loader)) }
+    env.modrinthImplementation.forEach { dep -> modImplementation(fletchingTable.modrinth(dep, stonecutter.current.version, env.loader)) }
+    env.modrinthInclude.forEach { dep ->
+        modImplementation(fletchingTable.modrinth(dep, stonecutter.current.version, env.loader))
+        include(fletchingTable.modrinth(dep, stonecutter.current.version, env.loader))
+    }
+
+    // Specific versions
+    env.modrinthVersionedRuntime.forEach { dep -> modLocalRuntime("maven.modrinth:${dep.key.removePrefix("modrinth.runtime.")}:${property(dep.key).toString()}") }
+    env.modrinthVersionedImplementation.forEach { dep -> modImplementation("maven.modrinth:${dep.key.removePrefix("modrinth.implementation.")}:${property(dep.key).toString()}") }
+    env.modrinthVersionedInclude.forEach { dep ->
+        modImplementation("maven.modrinth:${dep.key.removePrefix("modrinth.include.")}:${property(dep.key).toString()}")
+        include("maven.modrinth:${dep.key.removePrefix("modrinth.include.")}:${property(dep.key).toString()}")
+    }
 }
 
 //region Building
@@ -186,12 +248,12 @@ publishMods {
     type = env.channel
     modLoaders.add("fabric")
 
-    dryRun = !env.publish
+    dryRun = env.dryRun
             || (env.modrinthId != "..." && providers.environmentVariable("MODRINTH_TOKEN").getOrNull() == null)
             || (env.curseforgeId != "..." && providers.environmentVariable("CURSEFORGE_TOKEN").getOrNull() == null)
 
     modrinth {
-        projectId = env.modrinthId
+        projectId = property("publish.modrinth").toString()
         accessToken = providers.environmentVariable("MODRINTH_TOKEN")
         minecraftVersions.addAll(env.targets)
         requires {
@@ -201,7 +263,7 @@ publishMods {
 
 //    Uncomment publishing order in stonecutter.gradle.kts too if you want to publish to Curseforge
 //    curseforge {
-//        projectId = env.curseforgeId
+//        projectId = property("publish.curseforge").toString()
 //        accessToken = providers.environmentVariable("CURSEFORGE_TOKEN")
 //        minecraftVersions.addAll(mod.targets)
 //        requires {
