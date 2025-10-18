@@ -95,7 +95,7 @@ public class ConfigFileHandler {
     private void reloadDatapacks() {
         CommandManager manager = server.getCommandManager();
         ServerCommandSource source = server.getCommandSource();
-        manager.executeWithPrefix(source, "reload");
+        manager./*? if >= 1.21.10 {*/parseAndExecute/*?} else {*//*executeWithPrefix*//*?}*/(source, "reload");
     }
 
     private void notifyPlayers() {

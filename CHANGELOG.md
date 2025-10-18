@@ -1,2 +1,1 @@
-- Fix bug where players joining the server after a resourcepack update would still load the old version (#16)
-- Support 1.21.9
+- Support 1.21.10
