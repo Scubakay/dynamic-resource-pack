@@ -1,2 +1,1 @@
-- Support 1.21.10
-- #18 Improve compatibility with other mods by mixin into `MinecraftDedicatedServer.getResourcePackProperties`
+- Swap to Midnightlib for config

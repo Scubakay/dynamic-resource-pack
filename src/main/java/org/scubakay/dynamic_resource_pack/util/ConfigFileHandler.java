@@ -11,6 +11,7 @@ import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.scubakay.dynamic_resource_pack.DynamicResourcePack;
+import org.scubakay.dynamic_resource_pack.config.Config;
 
 import java.nio.file.Path;
 import java.util.Optional;
@@ -75,7 +76,7 @@ public class ConfigFileHandler {
             if (!started) {
                 started = true;
             } else {
-                if (DynamicResourcePack.modConfig.runReloadOnResourcePackUpdate.get()) {
+                if (Config.runReloadOnResourcePackUpdate) {
                     reloadDatapacks();
                 }
                 notifyPlayers();
@@ -103,11 +104,11 @@ public class ConfigFileHandler {
     }
 
     private void notifyPlayers() {
-        Text message = Text.literal(DynamicResourcePack.modConfig.reloadResourcePackMessage.get()).append(
-                Text.literal(DynamicResourcePack.modConfig.reloadResourcePackAction.get()).styled(style -> style.withColor(Formatting.GREEN)
+        Text message = Text.literal(Config.reloadResourcePackMessage).append(
+                Text.literal(Config.reloadResourcePackAction).styled(style -> style.withColor(Formatting.GREEN)
                                 //? if >= 1.21.5 {
                                 .withClickEvent(new ClickEvent.RunCommand("/resourcepack"))
-                                .withHoverEvent(new HoverEvent.ShowText(Text.literal(DynamicResourcePack.modConfig.reloadResourcePackTooltip.get())))
+                                .withHoverEvent(new HoverEvent.ShowText(Text.literal(Config.reloadResourcePackTooltip)))
                         //?} else {
                 /*.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/resourcepack"))
                 .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal(DynamicResourcePack.modConfig.reloadResourcePackTooltip.get())))
