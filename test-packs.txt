@@ -1,3 +1,5 @@
+// https://emn178.github.io/online-tools/sha1_checksum.html
+
 resource-pack=https\://cdn.modrinth.com/data/9YZxTdpf/versions/iZh38d3u/arcadia-roleplay-data.3.16.1.zip
 resource-pack-id=8fe38f19-1522-4e7d-81ba-571e2a002b7f
 resource-pack-prompt={"text"\:"Arcadia Roleplay Data.","color"\:"yellow"}
@@ -12,6 +14,11 @@ resource-pack=https\://cdn.modrinth.com/data/GwGMfCCc/versions/FDiuxJK6/Default%
 resource-pack-id=8fe38f19-1522-4e7d-81ba-571e2a002b7f
 resource-pack-prompt={"text"\:"Default HD.","color"\:"yellow"}
 resource-pack-sha1=9407e30b678c5842ceb5156a2dba096a9c3ef870
+
+resource-pack=https\://cdn.modrinth.com/data/uvpymuxq/versions/JW14JsXq/Better-Leaves-9.4.zip
+resource-pack-id=8fe38f19-1522-4e7d-81ba-571e2a002b7f
+resource-pack-prompt={"text"\:"Better Leaves.","color"\:"yellow"}
+resource-pack-sha1=4caada00aa07d45c9795079dd78a6c07aa644376
 
 
 
