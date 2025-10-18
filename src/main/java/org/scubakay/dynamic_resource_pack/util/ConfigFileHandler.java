@@ -111,7 +111,7 @@ public class ConfigFileHandler {
                                 .withHoverEvent(new HoverEvent.ShowText(Text.literal(Config.reloadResourcePackTooltip)))
                         //?} else {
                 /*.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/resourcepack"))
-                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal(DynamicResourcePack.modConfig.reloadResourcePackTooltip.get())))
+                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal(Config.reloadResourcePackTooltip)))
                 *///?}
                 ));
         server.getPlayerManager().broadcast(message, false);
